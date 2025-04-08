@@ -1,23 +1,150 @@
-import logo from './logo.svg';
-import './App.css';
+
+// Step 1:
+
+// import React, { useState } from 'react';
+// import PersonalDataForm from './PersonalDataForm';
+// import IncomeForm from './IncomeForm';
+// import SCorpExpensesForm from './SCorpExpensesForm';
+// import ReasonableSalaryForm from './ReasonableSalaryForm';
+
+// function App() {
+//   const [step, setStep] = useState(1);
+
+//   const goNext = () => {
+//     if (step < 4) {
+//       setStep(step + 1);
+//     }
+//   };
+
+//   const goPrevious = () => {
+//     if (step > 1) {
+//       setStep(step - 1);
+//     }
+//   };
+
+//   return (
+//     <div>
+//       {/* Example wizard steps */}
+//       <div className="wizard-container">
+//         <div
+//           className={`wizard-step ${step > 1 ? 'completed' : ''} ${
+//             step === 1 ? 'active' : ''
+//           }`}
+//         >
+//           <span>Step 1</span>
+//         </div>
+//         <div
+//           className={`wizard-step ${step > 2 ? 'completed' : ''} ${
+//             step === 2 ? 'active' : ''
+//           }`}
+//         >
+//           <span>Step 2</span>
+//         </div>
+//         <div
+//           className={`wizard-step ${step > 3 ? 'completed' : ''} ${
+//             step === 3 ? 'active' : ''
+//           }`}
+//         >
+//           <span>Step 3</span>
+//         </div>
+//         <div
+//           className={`wizard-step ${step > 4 ? 'completed' : ''} ${
+//             step === 4 ? 'active' : ''
+//           }`}
+//         >
+//           <span>Step 4</span>
+//         </div>
+//         <div className="wizard-line"></div>
+//       </div>
+
+//       {/* Show only the current step */}
+//       {step === 1 && <PersonalDataForm />}
+//       {step === 2 && <IncomeForm />}
+//       {step === 3 && <SCorpExpensesForm />}
+//       {step === 4 && <ReasonableSalaryForm />}
+
+//       {/* Buttons */}
+//       <div style={{ marginTop: '1rem' }}>
+//         <button onClick={goPrevious} disabled={step === 1}>
+//           Previous
+//         </button>
+//         <button onClick={goNext} disabled={step === 4}>
+//           Next
+//         </button>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+import React from 'react';
+import { useData } from './DataProvider';
+import PersonalDataForm from './PersonalDataForm';
+import IncomeForm from './IncomeForm';
+import SCorpExpensesForm from './SCorpExpensesForm';
+import ReasonableSalaryForm from './ReasonableSalaryForm';
 
 function App() {
+  const { formData, setFormData } = useData();
+
+  // Read wizard step from global form data
+  const step = formData.step || 1;
+
+  const setStep = (newStep) => {
+    setFormData({ ...formData, step: newStep });
+  };
+
+  const goNext = () => setStep(Math.min(step + 1, 4));
+  const goPrevious = () => setStep(Math.max(step - 1, 1));
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div>
+      <div className="wizard-container">
+        <div
+          className={`wizard-step ${step > 1 ? 'completed' : ''} ${
+            step === 1 ? 'active' : ''
+          }`}
         >
-          Learn React
-        </a>
-      </header>
+          <span>Step 1</span>
+        </div>
+        <div
+          className={`wizard-step ${step > 2 ? 'completed' : ''} ${
+            step === 2 ? 'active' : ''
+          }`}
+        >
+          <span>Step 2</span>
+        </div>
+        <div
+          className={`wizard-step ${step > 3 ? 'completed' : ''} ${
+            step === 3 ? 'active' : ''
+          }`}
+        >
+          <span>Step 3</span>
+        </div>
+        <div
+          className={`wizard-step ${step > 4 ? 'completed' : ''} ${
+            step === 4 ? 'active' : ''
+          }`}
+        >
+          <span>Step 4</span>
+        </div>
+        <div className="wizard-line"></div>
+      </div>
+
+      {step === 1 && <PersonalDataForm />}
+      {step === 2 && <IncomeForm />}
+      {step === 3 && <SCorpExpensesForm />}
+      {step === 4 && <ReasonableSalaryForm />}
+
+      <div style={{ marginTop: '1rem' }}>
+        <button onClick={goPrevious} disabled={step === 1}>
+          Previous
+        </button>
+        <button onClick={goNext} disabled={step === 4}>
+          Next
+        </button>
+      </div>
     </div>
   );
 }
